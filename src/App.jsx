@@ -33,7 +33,7 @@ function App() {
       <Logo />
       <Form onAddItems={handleAddItems} />
       <PackingList items={items} onDeleteItem={handleDeleteItem} onToggleItem={handleToggleItem} />
-      <Stats />
+      <Stats items={items} />
     </div>
   );
 }
@@ -97,14 +97,6 @@ function PackingList({ items, onDeleteItem, onToggleItem }) {
 }
 
 function Item({ item, onDeleteItem, onToggleItem }) {
-  //const [packed, setPacked] = useState(item.packed);
-
-  // function handleChecked() {
-  //   setPacked(!packed);
-
-  //   onToggleItem(item.id);
-  // }
-
   return (
     <li>
       <input type="checkbox" checked={item.packed} onChange={() => onToggleItem(item.id)} />
@@ -116,10 +108,20 @@ function Item({ item, onDeleteItem, onToggleItem }) {
   );
 }
 
-function Stats() {
+function Stats({ items }) {
+  if (!items.length) return <footer className="stats">Start adding some items to your packcking list 😎</footer>;
+
+  const numItems = items.length;
+  const packedItems = items.filter(item => item.packed).length;
+  const percentage = Math.round((packedItems / numItems) * 100);
+
   return (
     <footer className="stats">
-      <em>You have X items on your list, and you already packed X (X%)</em>
+      <em>
+        {percentage === 100
+          ? 'You got everything! Ready to go ✈️'
+          : `You have ${numItems} items on your list, and you already packed ${packedItems} ( ${percentage} % )`}
+      </em>
     </footer>
   );
 }
